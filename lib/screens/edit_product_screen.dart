@@ -13,11 +13,13 @@ class EditProductScreen extends StatefulWidget {
 
 class _EditProductScreenState extends State<EditProductScreen> {
   final _categoryFocusNode = FocusNode();
+  final _verifiedFocusNode = FocusNode();
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   final _imageUrlFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
+  String token;
   var _editedProduct = Product(
     id: null,
     creatorId: '',
@@ -26,6 +28,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     price: 0,
     description: '',
     imageUrl: '',
+    isverified: '',
   );
   var _initValues = {
     'creatorId': '',
@@ -34,6 +37,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'description': '',
     'price': '',
     'imageUrl': '',
+    'isverified': '',
   };
   var _isInit = true;
   var _isLoading = false;
@@ -49,6 +53,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (_isInit) {
       final productId = ModalRoute.of(context).settings.arguments as String;
       if (productId != null) {
+        token = Provider.of<Products>(context, listen: false).authToken;
         _editedProduct =
             Provider.of<Products>(context, listen: false).findById(productId);
         _initValues = {
@@ -184,6 +189,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           description: _editedProduct.description,
                           imageUrl: _editedProduct.imageUrl,
                           id: _editedProduct.id,
+                          isverified: _editedProduct.isverified,
                           //   isFavorite: _editedProduct.isFavorite
                         );
                       },
@@ -228,6 +234,50 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           description: _editedProduct.description,
                           imageUrl: _editedProduct.imageUrl,
                           id: _editedProduct.id,
+                          isverified: _editedProduct.isverified,
+                          //    isFavorite: _editedProduct.isFavorite
+                        );
+                      },
+                    ),
+                    DropdownButtonFormField(
+                      // isExpanded: true,
+                      // value: Catgory,
+                      decoration: InputDecoration(
+                        labelText: 'Is this Item verified?',
+                      ),
+                      onChanged: (_) {
+                        setState(() {});
+                      },
+                      // value: Catgory.other,
+                      items: [
+                        'true',
+                        'false',
+                      ].map((value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      focusNode: _verifiedFocusNode,
+                      validator: (value) {
+                        // ********
+                        if (value.isEmpty) {
+                          return 'Please provide a value.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        //Provider.of<Product>(context, listen: false).setverifiedStatus(token, value);
+
+                        _editedProduct = Product(
+                          creatorId: _editedProduct.creatorId,
+                          title: _editedProduct.title,
+                          category: _editedProduct.category,
+                          price: _editedProduct.price,
+                          description: _editedProduct.description,
+                          imageUrl: _editedProduct.imageUrl,
+                          id: _editedProduct.id,
+                          isverified: value,
                           //    isFavorite: _editedProduct.isFavorite
                         );
                       },
@@ -263,6 +313,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           description: _editedProduct.description,
                           imageUrl: _editedProduct.imageUrl,
                           id: _editedProduct.id,
+                          isverified: _editedProduct.isverified,
                           //isFavorite: _editedProduct.isFavorite
                         );
                       },
@@ -291,6 +342,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           description: value,
                           imageUrl: _editedProduct.imageUrl,
                           id: _editedProduct.id,
+                          isverified: _editedProduct.isverified,
                           //    isFavorite: _editedProduct.isFavorite,
                         );
                       },
@@ -354,6 +406,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 description: _editedProduct.description,
                                 imageUrl: value,
                                 id: _editedProduct.id,
+                                isverified: _editedProduct.isverified,
                                 //  isFavorite: _editedProduct.isFavorite,
                               );
                             },

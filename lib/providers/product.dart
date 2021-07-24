@@ -13,7 +13,7 @@ class Product with ChangeNotifier {
   final double price;
   final String imageUrl;
   final String category;
-  // bool isFavorite;
+  String isverified;
 
   Product({
     @required this.id,
@@ -23,33 +23,31 @@ class Product with ChangeNotifier {
     @required this.price,
     @required this.imageUrl,
     @required this.category,
-    // this.isFavorite = false,
+    @required this.isverified,
   });
 
-  /* void _setFavValue(bool newValue) {
-    isFavorite = newValue;
+  void _setverifiedValue(String newValue) {
+    isverified = newValue;
     notifyListeners();
   }
-*/
-  /* Future<void> toggleFavoriteStatus(String token, String userId) async {
-    final oldStatus = isFavorite;
-    isFavorite = !isFavorite;
+
+  Future<void> setverifiedStatus(String token, String newValue) async {
+    isverified = newValue;
     notifyListeners();
     final url =
-        'https://fireeats-434d3.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
+        'https://fireeats-434d3.firebaseio.com/products/$id.json?auth=$token';
     try {
-      final response = await http.put(
+      final response = await http.patch(
         url,
-        body: json.encode(
-          isFavorite,
-        ),
+        body: json.encode({
+          'isverified': isverified,
+        }),
       );
       if (response.statusCode >= 400) {
-        _setFavValue(oldStatus);
+        _setverifiedValue(newValue);
       }
     } catch (error) {
-      _setFavValue(oldStatus);
+      _setverifiedValue(newValue);
     }
   }
-  */
 }

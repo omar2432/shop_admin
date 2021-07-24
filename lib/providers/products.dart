@@ -61,8 +61,8 @@ class Products with ChangeNotifier {
       }
       url =
           'https://fireeats-434d3.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
-      final favoriteResponse = await http.get(url);
-      final favoriteData = json.decode(favoriteResponse.body);
+      // final favoriteResponse = await http.get(url);
+      //  final favoriteData = json.decode(favoriteResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
@@ -72,6 +72,7 @@ class Products with ChangeNotifier {
           title: prodData['title'],
           description: prodData['description'],
           price: prodData['price'],
+          isverified: prodData['isverified'],
           //    isFavorite:
           //       favoriteData == null ? false : favoriteData[prodId] ?? false,
           imageUrl: prodData['imageUrl'],
@@ -95,8 +96,8 @@ class Products with ChangeNotifier {
       }
       url =
           'https://fireeats-434d3.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
-      final favoriteResponse = await http.get(url);
-      final favoriteData = json.decode(favoriteResponse.body);
+      // final favoriteResponse = await http.get(url);
+      //final favoriteData = json.decode(favoriteResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
@@ -106,6 +107,7 @@ class Products with ChangeNotifier {
           title: prodData['title'],
           description: prodData['description'],
           price: prodData['price'],
+          isverified: prodData['isverified'],
           //   isFavorite: false,
           //    favoriteData == null ? false : favoriteData[prodId] ?? false,
           imageUrl: prodData['imageUrl'],
@@ -133,17 +135,18 @@ class Products with ChangeNotifier {
           'imageUrl': product.imageUrl,
           'price': product.price,
           'creatorId': userId,
+          'isverified': product.isverified,
         }),
       );
       final newProduct = Product(
-        title: product.title,
-        creatorId: userId,
-        category: product.category,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl,
-        id: json.decode(response.body)['name'],
-      );
+          title: product.title,
+          creatorId: userId,
+          category: product.category,
+          description: product.description,
+          price: product.price,
+          imageUrl: product.imageUrl,
+          id: json.decode(response.body)['name'],
+          isverified: product.isverified);
       _items.add(newProduct);
       // _items.insert(0, newProduct); // at the start of the list
       notifyListeners();
@@ -184,17 +187,18 @@ class Products with ChangeNotifier {
             'imageUrl': product.imageUrl,
             'price': product.price,
             'creatorId': product.creatorId,
+            'isverified': product.isverified,
           }),
         );
         final newProduct = Product(
-          title: product.title,
-          creatorId: product.creatorId,
-          category: product.category,
-          description: product.description,
-          price: product.price,
-          imageUrl: product.imageUrl,
-          id: product.id,
-        );
+            title: product.title,
+            creatorId: product.creatorId,
+            category: product.category,
+            description: product.description,
+            price: product.price,
+            imageUrl: product.imageUrl,
+            id: product.id,
+            isverified: product.isverified);
 
         _featuredItems.add(newProduct);
 
@@ -222,43 +226,6 @@ class Products with ChangeNotifier {
     }
   }
 
-/*
-  Future<void> addFeateredProduct(Product product) async {
-    var prodid = product.id;
-    final url =
-        'https://fireeats-434d3.firebaseio.com/featured/$prodid.json?auth=$authToken';
-    try {
-      final response = await http.patch(
-        url,
-        body: json.encode({
-          'title': product.title,
-          'description': product.description,
-          'imageUrl': product.imageUrl,
-          'price': product.price,
-          'creatorId': product.creatorId,
-        }),
-      );
-      /*
-      final newProduct = Product(
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl,
-        id: json.decode(response.body)['name'],
-      );
-
-      */
-      //  _items.add(newProduct);
-      // _items.insert(0, newProduct); // at the start of the list
-      notifyListeners();
-    } catch (error) {
-      print(error);
-      throw error;
-    }
-  }
-
-*/
-
   Future<void> updateProduct(String id, Product newProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
@@ -270,7 +237,8 @@ class Products with ChangeNotifier {
             'category': newProduct.category,
             'description': newProduct.description,
             'imageUrl': newProduct.imageUrl,
-            'price': newProduct.price
+            'price': newProduct.price,
+            'isverified': newProduct.isverified,
           }));
       _items[prodIndex] = newProduct;
       notifyListeners();
@@ -311,25 +279,4 @@ class Products with ChangeNotifier {
     }
     existingProduct = null;
   }
-
-/*
-Future<void> deleteFeateredProduct(String id) async {
-    final url =
-        'https://fireeats-434d3.firebaseio.com/featured/$id.json?auth=$authToken';
-    // final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
-    // var existingProduct = _items[existingProductIndex];
-    // _items.removeAt(existingProductIndex);
-
-    final response = await http.delete(url);
-    notifyListeners();
-    if (response.statusCode >= 400) {
-      // _items.insert(existingProductIndex, existingProduct);
-      notifyListeners();
-      throw HttpException('Could not delete featured product.');
-    }
-    // existingProduct = null;
-  }
-
-*/
-
 }
